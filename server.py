@@ -13,6 +13,7 @@ class ModelServer(TCPServer):
         if spec is None or spec.loader is None:
             raise FileNotFoundError(f"models/{model_name}_model/{model_name}_model.py not found")
         module = module_from_spec(spec)
+        sys.path.append(f"models/{model_name}_model")
         spec.loader.exec_module(module)
 
         self.model: ModelHandler = getattr(module, "setup")()
