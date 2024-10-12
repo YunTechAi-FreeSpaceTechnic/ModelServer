@@ -1,0 +1,51 @@
+services:
+  yuan_model:
+    build:
+      context: .
+      args:
+        REQUIREMENTS_FILE: ./models/yuan_model/requirements.txt
+    env_file:
+      - path: ./.env
+    environment:
+      PORT: 6666
+      HOST: 0.0.0.0
+      MODEL_NAME: yuan
+    ports:
+      - 6666:6666
+    volumes:
+      - "./:/usr/src/app/mount"
+    networks:
+      - bot
+  vincent_model:
+    build:
+      context: .
+      args:
+        REQUIREMENTS_FILE: ./models/vincent_model/requirements.txt
+    env_file:
+      - path: ./.env
+    environment:
+      PORT: 6666
+      HOST: 0.0.0.0
+      MODEL_NAME: vincent
+    volumes:
+      - "./:/usr/src/app/mount"
+    networks:
+      - bot
+  paul_model:
+    build:
+      context: .
+      args:
+        REQUIREMENTS_FILE: ./models/paul_model./requirements.txt
+    env_file:
+      - path: ./.env
+    environment:
+      PORT: 6666
+      HOST: 0.0.0.0
+      MODEL_NAME: paul
+    volumes:
+      - "./:/usr/src/app/mount"
+    networks:
+      - bot
+
+networks:
+  bot:
