@@ -3,4 +3,4 @@
 	url = git@github.com:YunTechAi-FreeSpaceTechnic/common.git
 [submodule "models/vincent_model"]
 	path = models/vincent_model
-	url = git@github.com:YunTechAi-FreeSpaceTechnic/vincent_model.git
+	url = git@github.com:YunTechAi-FreeSpaceTechnic/Model-Vincent.git
