@@ -1,12 +1,16 @@
 [submodule "common"]
 	path = common
-	url = git@github.com:YunTechAi-FreeSpaceTechnic/common.git
+  url = git@github.com:YunTechAi-FreeSpaceTechnic/common.git
+  branch = main
 [submodule "models/vincent_model"]
 	path = models/vincent_model
 	url = git@github.com:YunTechAi-FreeSpaceTechnic/vincent_model.git
+  branch = main
 [submodule "models/paul_model"]
 	path = models/paul_model
 	url = git@github.com:YunTechAi-FreeSpaceTechnic/paul_model.git
+  branch = main
 [submodule "models/yuan_model"]
 	path = models/yuan_model
 	url = git@github.com:YunTechAi-FreeSpaceTechnic/yuan_model.git
+  branch = main
