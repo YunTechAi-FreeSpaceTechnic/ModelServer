@@ -9,11 +9,11 @@ from logging import getLogger
 
 class ModelServer(TCPServer):
     def __init__(self, host: str, port: int, model_name: str):
-        spec = spec_from_file_location(f"models.{model_name}_model", f"models/{model_name}_model/{model_name}_model.py")
+        spec = spec_from_file_location(f"{model_name}_model", f"{model_name}_model/{model_name}_model.py")
         if spec is None or spec.loader is None:
-            raise FileNotFoundError(f"models/{model_name}_model/{model_name}_model.py not found")
+            raise FileNotFoundError(f"{model_name}_model/{model_name}_model.py not found")
         module = module_from_spec(spec)
-        sys.path.append(f"models/{model_name}_model")
+        sys.path.append(f"{model_name}_model")
         spec.loader.exec_module(module)
 
         self.model: ModelHandler = getattr(module, "setup")()
