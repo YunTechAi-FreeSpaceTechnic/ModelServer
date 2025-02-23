@@ -1,45 +1,47 @@
 services:
   yuan_model:
-    build:
-      context: .
-      args:
-        REQUIREMENTS_FILE: ./models/yuan_model/requirements.txt
-        MODEL_NAME: yuan
-    env_file:
-      - path: ./.env
+    image: ghcr.io/yuntechai-freespacetechnic/runtime:latest
+    hostname: modelserver_${MODEL_NAME}
     environment:
-      PORT: 6666
-      HOST: 0.0.0.0
-    ports:
-      - 6666:6666
+      APP_PATH: server.py
+      APP_ARGS: ${MODEL_NAME} ${HOST} ${PORT}
+    volumes:
+      - ./models/${MODEL_NAME}_model:/usr/src/app/${MODEL_NAME}_model
+      - ./server.py:/usr/src/app/server.py
+      - ./common/:/usr/src/app/common/
+    env_file:
+      - path: ./env/${MODEL_NAME}.env
     networks:
-      - bot
+      - modelserver
   vincent_model:
-    build:
-      context: .
-      args:
-        REQUIREMENTS_FILE: ./models/vincent_model/requirements.txt
-        MODEL_NAME: vincent
-    env_file:
-      - path: ./.env
+    image: ghcr.io/yuntechai-freespacetechnic/runtime:latest
+    hostname: modelserver_${MODEL_NAME}
     environment:
-      PORT: 6666
-      HOST: 0.0.0.0
+      APP_PATH: server.py
+      APP_ARGS: ${MODEL_NAME} ${HOST} ${PORT}
+    volumes:
+      - ./models/${MODEL_NAME}_model:/usr/src/app/${MODEL_NAME}_model
+      - ./server.py:/usr/src/app/server.py
+      - ./common/:/usr/src/app/common/
+    env_file:
+      - path: ./env/${MODEL_NAME}.env
     networks:
-      - bot
-  #  paul_model:
-  #    build:
-  #      context: .
-  #      args:
-  #        REQUIREMENTS_FILE: ./models/paul_model/requirements.txt
-  #        MODEL_NAME: paul
-  #    env_file:
-  #      - path: ./.env
-  #    environment:
-  #      PORT: 6666
-  #      HOST: 0.0.0.0
-  #    networks:
-  #      - bot
+      - modelserver
+  # paul_model:
+  #   image: ghcr.io/yuntechai-freespacetechnic/runtime:latest
+  #   hostname: modelserver_${MODEL_NAME}
+  #   environment:
+  #     APP_PATH: server.py
+  #     APP_ARGS: ${MODEL_NAME} ${HOST} ${PORT}
+  #   volumes:
+  #     - ./models/${MODEL_NAME}_model:/usr/src/app/${MODEL_NAME}_model
+  #     - ./server.py:/usr/src/app/server.py
+  #     - ./common/:/usr/src/app/common/
+  #   env_file:
+  #     - path: ./env/${MODEL_NAME}.env
+  #   networks:
+  #     - modelserver
 
 networks:
-  bot:
+  modelserver:
+    name: modelserver

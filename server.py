@@ -9,8 +9,7 @@ from logging import getLogger
 
 class ModelServer(TCPServer):
     def __init__(self, host: str, port: int, model_name: str):
-        spec = spec_from_file_location(f"{model_name}_model", f"{
-                                       model_name}_model/{model_name}_model.py")
+        spec = spec_from_file_location(f"{model_name}_model", f"{model_name}_model/{model_name}_model.py")
         if spec is None or spec.loader is None:
             raise FileNotFoundError(
                 f"{model_name}_model/{model_name}_model.py not found")
@@ -31,7 +30,7 @@ class ModelServer(TCPServer):
     def callback(self, data: bytes) -> bytes:
         request_buf = ByteBuffter(data)
         try:
-            request: Request = Request.decode(request_buf).get_data()
+            request = Request.decode(request_buf)
         except:
             self.logger.error(f"Failed to decode request: {data}")
             raise ValueError("Failed to decode request")
