@@ -8,4 +8,4 @@
 [submodule "models/yuan_model"]
 	path = models/yuan_model
 	url = git@github.com:YunTechAi-FreeSpaceTechnic/yuan_model.git
-  branch = main
+  branch = use-new-common
