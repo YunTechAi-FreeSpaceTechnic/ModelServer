@@ -1,6 +1,6 @@
 from importlib.util import spec_from_file_location, module_from_spec
 import sys
-from common.ModelAPI import ModelHandler, Request
+from common.ModelAPI import ModelHandler, ModelInfo, Package, Predict
 from common.protocol.tcp import TCPServer
 from common.protocol.byte_buffter import ByteBuffter
 from common.logger_config import setup_logger
@@ -29,20 +29,24 @@ class ModelServer(TCPServer):
 
     def callback(self, data: bytes) -> bytes:
         request_buf = ByteBuffter(data)
+        print(Package.__subclasses__())
         try:
-            request = Request.decode(request_buf)
+            request = Package.decode(request_buf)
+            request_data = request.Request.decode(request_buf)
         except:
             self.logger.error(f"Failed to decode request: {data}")
             raise ValueError("Failed to decode request")
 
         try:
-            response = self.model.invoke(request)
+            if request == Predict:
+                response = self.model.invoke(request_data)
+            elif request == ModelInfo:
+                response = self.model.model_info()
         except:
             self.logger.error(f"Failed to invoke model: {request}")
             raise ValueError("Failed to invoke model")
         response_buf = ByteBuffter()
-
-        response.encode(response_buf)
+        Package.encode(response_buf, response)
 
         return response_buf.to_bytes()
 
