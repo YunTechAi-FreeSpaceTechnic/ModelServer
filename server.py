@@ -29,6 +29,7 @@ class ModelServer(TCPServer):
 
     def callback(self, data: bytes) -> bytes:
         request_buf = ByteBuffter(data)
+        print(Package.__subclasses__())
         try:
             request = Package.decode(request_buf)
             request_data = request.Request.decode(request_buf)
@@ -45,7 +46,7 @@ class ModelServer(TCPServer):
             self.logger.error(f"Failed to invoke model: {request}")
             raise ValueError("Failed to invoke model")
         response_buf = ByteBuffter()
-        Package.encode(buf, response)
+        Package.encode(response_buf, response)
 
         return response_buf.to_bytes()
 
