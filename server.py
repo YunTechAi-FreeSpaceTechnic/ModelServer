@@ -36,15 +36,17 @@ class ModelServer(TCPServer):
             self.logger.error(f"Failed to decode request: {data}")
             raise ValueError("Failed to decode request")
 
+        self.logger.info(f"Request: {request_data}")
+
         try:
             if request == Predict:
-                self.logger.info(f"{request_data}")
                 response = self.model.invoke(request_data)
             elif request == ModelInfo:
                 response = self.model.model_info()
         except Exception as e:
             response = Error.Response(f"Failed to invoke model: {e}")
             self.logger.error(f"Failed to invoke model: {e}")
+        self.logger.info(f"Response: {response}")
         response_buf = ByteBuffter()
         Package.encode(response_buf, response)
 
