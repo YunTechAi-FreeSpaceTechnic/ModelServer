@@ -1,20 +1,25 @@
-from importlib.util import spec_from_file_location, module_from_spec
 import sys
+import glob
+import os
+
+from importlib.util import spec_from_file_location, module_from_spec
+
 from common.ModelAPI import Error, ModelHandler, ModelInfo, Package, Predict
 from common.protocol.tcp import TCPServer
 from common.protocol.byte_buffter import ByteBuffter
 from common.logger_config import setup_logger
+
 from logging import getLogger
 
 
 class ModelServer(TCPServer):
     def __init__(self, host: str, port: int, model_name: str):
-        spec = spec_from_file_location(f"{model_name}_model", f"{model_name}_model/{model_name}_model.py")
+        spec = spec_from_file_location(f"model", f"model/{model_name}_model.py")
         if spec is None or spec.loader is None:
             raise FileNotFoundError(
-                f"{model_name}_model/{model_name}_model.py not found")
+                f"model/{model_name}_model.py not found")
         module = module_from_spec(spec)
-        sys.path.append(f"{model_name}_model")
+        sys.path.append(f"model")
         spec.loader.exec_module(module)
 
         self.model: ModelHandler = getattr(module, "setup")()
@@ -54,9 +59,12 @@ class ModelServer(TCPServer):
 
 
 if __name__ == "__main__":
-    model_name = sys.argv[1]
-    host = sys.argv[2]
-    port = int(sys.argv[3])
+    first_file = glob.glob(os.path.join("model", "*_model.py"))[0]
+    model_name = os.path.basename(first_file).replace("_model.py", "")
+
+    host = sys.argv[1]
+    port = int(sys.argv[2])
+
     server = ModelServer(host, port, model_name)
     server.listen_thread.start()
     server.listen_thread.join()
