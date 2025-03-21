@@ -1,6 +1,7 @@
 import sys
 import glob
 import os
+import asyncio
 
 from importlib.util import spec_from_file_location, module_from_spec
 
@@ -32,8 +33,8 @@ class ModelServer(TCPServer):
 
         super().__init__(self.logger, host, port, self.callback)
 
-    def callback(self, data: bytes) -> bytes:
-        request_buf = ByteBuffter(data)
+    def callback(self, data: bytearray) -> bytearray:
+        request_buf = ByteBuffter(bytes(data))
         try:
             request = Package.decode(request_buf)
             request_data = request.Request.decode(request_buf)
@@ -55,7 +56,7 @@ class ModelServer(TCPServer):
         response_buf = ByteBuffter()
         Package.encode(response_buf, response)
 
-        return response_buf.to_bytes()
+        return bytearray(response_buf.to_bytes())
 
 
 if __name__ == "__main__":
@@ -65,6 +66,4 @@ if __name__ == "__main__":
     host = sys.argv[1]
     port = int(sys.argv[2])
 
-    server = ModelServer(host, port, model_name)
-    server.listen_thread.start()
-    server.listen_thread.join()
+    asyncio.run(ModelServer(host, port, model_name).listen())
