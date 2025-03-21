@@ -6,7 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from common.protocol.tcp import TCPClient
 from common.protocol.protocol import Package, ByteBuffter
-from common.ModelAPI import ModelInfo, Error as ModelError
+from common.ModelAPI import ModelInfo, Error as ModelError, Predict, Text
 
 async def main(host: str, port: int):
     client = TCPClient(host, port)
@@ -17,24 +17,40 @@ async def main(host: str, port: int):
         fn = input("Function: ")
 
         if fn == "info":
-            await info(client)
+            print(await info(client))
+        elif fn == "predict":
+            print(await predict(client))
 
 async def info(client: TCPClient):
     buf = ByteBuffter()
     Package.encode(buf, ModelInfo.Request())
     data = await client.send(buf.to_bytes()) or bytearray()
     response_buf = ByteBuffter(bytes(data))
-    Package.decode(response_buf)
+    check_error(Package.decode(response_buf), response_buf)
     model_info = ModelInfo.Response.decode(response_buf)
 
-    print(model_info)
+    return model_info
 
-async def check_error(package: type[Package], buf: ByteBuffter):
+async def predict(client:TCPClient):
+    buf = ByteBuffter()
+    text = input("Input text:")
+    Package.encode(buf, Predict.Request([
+        Text("User", text)
+    ]))
+    data = await client.send(buf.to_bytes()) or bytearray()
+    response_buf = ByteBuffter(bytes(data))
+
+    check_error(Package.decode(response_buf), response_buf)
+    predict = Predict.Response.decode(response_buf)
+
+    return predict
+
+def check_error(package: type[Package], buf: ByteBuffter):
     if package == ModelError:
         model_error = ModelError.Response.decode(buf)
         print(model_error.message)
 
-        raise Error(model_error.message)
+        raise Exception(model_error.message)
     else:
         return package
 
