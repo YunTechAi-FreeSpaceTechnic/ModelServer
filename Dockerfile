@@ -12,4 +12,8 @@ COPY $MODEL model
 COPY server.py .
 COPY common .
 
+RUN find . -name "requirements.txt" -exec cat {} \; >/usr/src/all_requirements.txt
+
+RUN pip install -r /usr/src/all_requirements.txt
+
 CMD python $HOST $PORT
