@@ -16,4 +16,4 @@ RUN find . -name "requirements.txt" -exec cat {} \; >/usr/src/all_requirements.t
 
 RUN pip install -r /usr/src/all_requirements.txt
 
-CMD python $HOST $PORT
+CMD python server.py $HOST $PORT
