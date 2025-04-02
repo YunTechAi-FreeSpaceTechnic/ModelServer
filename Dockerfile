@@ -10,7 +10,7 @@ ENV HOST=0.0.0.0
 
 COPY $MODEL model
 COPY server.py .
-COPY common .
+COPY common common
 
 RUN find . -name "requirements.txt" -exec cat {} \; >/usr/src/all_requirements.txt
 
