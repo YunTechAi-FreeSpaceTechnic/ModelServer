@@ -10,8 +10,9 @@ ENV HOST=0.0.0.0
 
 COPY $MODEL model
 COPY server.py .
+COPY requirements.txt all_requirements.txt
 
-RUN find . -name "requirements.txt" -exec cat {} \; >/usr/src/all_requirements.txt
+RUN find . -name "requirements.txt" -exec cat {} \; >>/usr/src/all_requirements.txt
 
 RUN pip install -r /usr/src/all_requirements.txt
 
