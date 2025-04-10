@@ -12,6 +12,9 @@ COPY $MODEL model
 COPY server.py .
 COPY requirements.txt .
 
+RUN apt-get update && apt-get install -y git
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
 RUN find . -name "requirements.txt" -exec cat {} \; >>/usr/src/all_requirements.txt
 
 RUN pip install -r /usr/src/all_requirements.txt
